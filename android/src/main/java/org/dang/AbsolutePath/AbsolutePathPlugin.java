@@ -52,7 +52,7 @@ public class AbsolutePathPlugin implements FlutterPlugin, MethodCallHandler {
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
-    } else if (call.method.equals("offAsset")) {
+    } else if (call.method.equals("ofAsset")) {
       String assetName = call.hasArgument("assetName") ? call.argument("assetName").toString() : "";
       String key = registrar.lookupKeyForAsset(assetName);
       result.success(key);
