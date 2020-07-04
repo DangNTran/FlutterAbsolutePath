@@ -16,6 +16,11 @@ public class AbsolutePathPlugin implements FlutterPlugin, MethodCallHandler {
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
+  private final Registrar registrar;
+
+  private AbsolutePathPlugin(Registrar registrar) {
+    this.registrar = registrar;
+  }
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -34,13 +39,17 @@ public class AbsolutePathPlugin implements FlutterPlugin, MethodCallHandler {
   // in the same class.
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "AbsolutePath");
-    channel.setMethodCallHandler(new AbsolutePathPlugin());
+    channel.setMethodCallHandler(new AbsolutePathPlugin(registrar));
   }
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
+    } else if (call.method.equals("offAsset")) {
+      String assetName = call.hasArgument("assetName") ? call.argument("assetName").toString() : "";
+      String key = registrar.lookupKeyForAsset(assetName);
+      result.success(key);
     } else {
       result.notImplemented();
     }
