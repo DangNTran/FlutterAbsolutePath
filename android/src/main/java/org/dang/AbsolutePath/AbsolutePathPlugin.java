@@ -18,13 +18,14 @@ public class AbsolutePathPlugin implements FlutterPlugin, MethodCallHandler {
   private MethodChannel channel;
   private final Registrar registrar;
 
-  private AbsolutePathPlugin(Registrar registrar) {
+  AbsolutePathPlugin(Registrar registrar) {
     this.registrar = registrar;
   }
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "AbsolutePath");
+    flutterPluginBinding.getFlutterAssets().
     channel.setMethodCallHandler(this);
   }
 
@@ -39,7 +40,8 @@ public class AbsolutePathPlugin implements FlutterPlugin, MethodCallHandler {
   // in the same class.
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "AbsolutePath");
-    channel.setMethodCallHandler(new AbsolutePathPlugin(registrar));
+    AbsolutePathPlugin plugin = new AbsolutePathPlugin(registrar);
+    channel.setMethodCallHandler(plugin);
   }
 
   @Override
