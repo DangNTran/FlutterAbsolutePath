@@ -3,6 +3,7 @@ package org.dang.AbsolutePath;
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -16,16 +17,20 @@ public class AbsolutePathPlugin implements FlutterPlugin, MethodCallHandler {
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel channel;
-  private final Registrar registrar;
+  private Registrar registrar;
 
-  AbsolutePathPlugin(Registrar registrar) {
+  public AbsolutePathPlugin() {
+
+  }
+  private AbsolutePathPlugin(Registrar registrar) {
     this.registrar = registrar;
   }
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "AbsolutePath");
-    flutterPluginBinding.getFlutterAssets().
+    ShimPluginRegistry shimPluginRegistry = new ShimPluginRegistry(flutterPluginBinding.getFlutterEngine());
+    this.registrar = shimPluginRegistry.registrarFor("org.dang.AbsolutePath.AbsolutePathPlugin");
     channel.setMethodCallHandler(this);
   }
 
@@ -40,8 +45,7 @@ public class AbsolutePathPlugin implements FlutterPlugin, MethodCallHandler {
   // in the same class.
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "AbsolutePath");
-    AbsolutePathPlugin plugin = new AbsolutePathPlugin(registrar);
-    channel.setMethodCallHandler(plugin);
+    channel.setMethodCallHandler(new AbsolutePathPlugin(registrar));
   }
 
   @Override
